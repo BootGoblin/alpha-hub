@@ -25,6 +25,15 @@
             margin-top: 0;
             margin-bottom: 25px;
         }
+        .header-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .header-row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
         .input-group {
             margin-bottom: 15px;
         }
@@ -43,6 +52,7 @@
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 1em;
+            font-family: inherit;
         }
         select {
             background-color: #fdfdfd;
@@ -74,12 +84,17 @@
         }
         .total-line {
             font-weight: bold;
-            font-size: 1.3em !important;
+            font-size: 1.2em !important;
             border-top: 2px solid #ccc;
             padding-top: 10px;
             color: #2c3e50;
         }
-        /* CSS for the flashing Saved indicator */
+        .selling-line {
+            font-weight: bold;
+            font-size: 1.4em !important;
+            color: #27ae60;
+            margin-top: 10px !important;
+        }
         .save-indicator {
             color: #27ae60;
             font-size: 0.85em;
@@ -91,12 +106,73 @@
         .save-indicator.show {
             opacity: 1;
         }
+        .print-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        .print-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* --- PRINT STYLES --- */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .calculator-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+            /* Hide UI elements that shouldn't be on the paper */
+            .print-btn, .save-indicator {
+                display: none !important; 
+            }
+            /* Make inputs look like standard text */
+            input, select {
+                border: none;
+                background: transparent;
+                padding: 0;
+                font-weight: bold;
+                color: #2c3e50;
+                appearance: none;
+                -webkit-appearance: none;
+            }
+            .results {
+                border-left: 5px solid #bdc3c7; 
+                background: transparent;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="calculator-container">
-    <h2>Sheet Metal Estimator</h2>
+    <h2>Alpha Sheet Metal Estimator</h2>
+    
+    <div class="header-row">
+        <div class="input-group" style="flex: 2;">
+            <label for="projectName">Project Name / Reference</label>
+            <input type="text" id="projectName" placeholder="Enter job name...">
+        </div>
+        <div class="input-group">
+            <label for="projectDate">Date</label>
+            <input type="date" id="projectDate">
+        </div>
+    </div>
+
+    <div class="divider"></div>
     
     <div class="input-group">
         <label for="profileSelect">Standard Profile</label>
@@ -123,14 +199,15 @@
         </select>
     </div>
 
-    <div class="input-group">
-        <label for="stretchOut">Stretch Out (Inches)</label>
-        <input type="number" id="stretchOut" value="20" step="0.5">
-    </div>
-
-    <div class="input-group">
-        <label for="laborMins">Labor Minutes (per LF)</label>
-        <input type="number" id="laborMins" value="5.0" step="0.1">
+    <div class="header-row">
+        <div class="input-group">
+            <label for="stretchOut">Stretch Out (Inches)</label>
+            <input type="number" id="stretchOut" value="20" step="0.5">
+        </div>
+        <div class="input-group">
+            <label for="laborMins">Labor Mins (per LF)</label>
+            <input type="number" id="laborMins" value="5.0" step="0.1">
+        </div>
     </div>
 
     <div class="divider"></div>
@@ -140,28 +217,38 @@
         <input type="number" id="totalLF" value="100" step="1">
     </div>
 
-    <div class="input-group">
-        <label for="materialCost">
-            Material Cost ($ per Sq Ft) 
-            <span id="saveMat" class="save-indicator">✓ Saved</span>
-        </label>
-        <input type="number" id="materialCost" value="1.50" step="0.01">
+    <div class="header-row">
+        <div class="input-group">
+            <label for="materialCost">
+                Mat. Cost ($/SqFt) 
+                <span id="saveMat" class="save-indicator">✓ Saved</span>
+            </label>
+            <input type="number" id="materialCost" value="1.50" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="laborRate">
+                Labor Rate ($/Hr) 
+                <span id="saveLab" class="save-indicator">✓ Saved</span>
+            </label>
+            <input type="number" id="laborRate" value="60.00" step="1.00">
+        </div>
     </div>
 
-    <div class="input-group">
-        <label for="laborRate">
-            Shop Hourly Labor Rate ($) 
-            <span id="saveLab" class="save-indicator">✓ Saved</span>
-        </label>
-        <input type="number" id="laborRate" value="60.00" step="1.00">
-    </div>
-
-    <div class="input-group">
-        <label for="wasteFactor">
-            Waste/Scrap Factor (%) 
-            <span id="saveWaste" class="save-indicator">✓ Saved</span>
-        </label>
-        <input type="number" id="wasteFactor" value="10" step="1">
+    <div class="header-row">
+        <div class="input-group">
+            <label for="wasteFactor">
+                Waste Factor (%) 
+                <span id="saveWaste" class="save-indicator">✓ Saved</span>
+            </label>
+            <input type="number" id="wasteFactor" value="10" step="1">
+        </div>
+        <div class="input-group">
+            <label for="markupFactor">
+                Markup Factor (%) 
+                <span id="saveMarkup" class="save-indicator">✓ Saved</span>
+            </label>
+            <input type="number" id="markupFactor" value="20" step="1">
+        </div>
     </div>
 
     <div class="results">
@@ -171,25 +258,34 @@
         </div>
         <p><span>Total Material Cost:</span> <span id="outTotalMat">$0.00</span></p>
         <p><span>Total Labor Cost:</span> <span id="outTotalLab">$0.00</span></p>
-        <p class="total-line"><span>Grand Total:</span> <span id="outGrandTotal">$0.00</span></p>
+        <p class="total-line"><span>Total Base Cost:</span> <span id="outGrandTotal">$0.00</span></p>
+        <p class="selling-line"><span>Selling Price:</span> <span id="outSellingPrice">$0.00</span></p>
     </div>
+
+    <button class="print-btn" onclick="window.print()">Print Estimate to PDF</button>
+
 </div>
 
 <script>
-    // 1. Load saved settings when the page opens
+    // Set today's date automatically
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('projectDate').value = today;
+
+    // Load saved settings when the page opens
     window.addEventListener('DOMContentLoaded', () => {
         const savedMaterial = localStorage.getItem('alphaMaterialCost');
         const savedLabor = localStorage.getItem('alphaLaborRate');
         const savedWaste = localStorage.getItem('alphaWasteFactor');
+        const savedMarkup = localStorage.getItem('alphaMarkupFactor');
 
         if (savedMaterial) document.getElementById('materialCost').value = savedMaterial;
         if (savedLabor) document.getElementById('laborRate').value = savedLabor;
         if (savedWaste) document.getElementById('wasteFactor').value = savedWaste;
+        if (savedMarkup) document.getElementById('markupFactor').value = savedMarkup;
 
-        updateUI(); // Run the initial calculation
+        updateUI(); 
     });
 
-    // 2. Dropdown behavior
     document.getElementById('profileSelect').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
@@ -197,7 +293,6 @@
         updateUI(); 
     });
 
-    // 3. Main calculation and saving function
     function updateUI() {
         const stretch = parseFloat(document.getElementById('stretchOut').value) || 0;
         const laborMins = parseFloat(document.getElementById('laborMins').value) || 0;
@@ -205,13 +300,13 @@
         const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
         const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
         const waste = parseFloat(document.getElementById('wasteFactor').value) || 0;
+        const markup = parseFloat(document.getElementById('markupFactor').value) || 0;
 
-        // Auto-save the rates to the browser
         localStorage.setItem('alphaMaterialCost', materialCost);
         localStorage.setItem('alphaLaborRate', laborRate);
         localStorage.setItem('alphaWasteFactor', waste);
+        localStorage.setItem('alphaMarkupFactor', markup);
 
-        // Math
         const materialSqFtPerLF = stretch / 12;
         const baseMaterialCostPerLF = materialSqFtPerLF * materialCost;
         const wasteMultiplier = 1 + (waste / 100);
@@ -222,37 +317,37 @@
 
         const grandTotalMaterial = totalMaterialCostPerLF * totalLF;
         const grandTotalLabor = laborCostPerLF * totalLF;
+        
         const grandTotalJob = grandTotalMaterial + grandTotalLabor;
+        
+        const markupMultiplier = 1 + (markup / 100);
+        const sellingPrice = grandTotalJob * markupMultiplier;
 
-        // Update the screen
         document.getElementById('outMatLF').innerText = '$' + totalMaterialCostPerLF.toFixed(2);
         document.getElementById('outLabLF').innerText = '$' + laborCostPerLF.toFixed(2);
         document.getElementById('outTotalMat').innerText = '$' + grandTotalMaterial.toFixed(2);
         document.getElementById('outTotalLab').innerText = '$' + grandTotalLabor.toFixed(2);
         document.getElementById('outGrandTotal').innerText = '$' + grandTotalJob.toFixed(2);
+        document.getElementById('outSellingPrice').innerText = '$' + sellingPrice.toFixed(2);
     }
 
-    // 4. Function to flash the "Saved!" text
     function triggerSaveFlash(elementId) {
         const indicator = document.getElementById(elementId);
         indicator.classList.add('show');
-        
-        // Remove the class after 1.5 seconds so it fades out
         setTimeout(() => {
             indicator.classList.remove('show');
         }, 1500);
     }
 
-    // 5. Attach event listeners
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('input', updateUI);
     });
 
-    // Attach specific listeners for the flash effect when rates change
     document.getElementById('materialCost').addEventListener('input', () => triggerSaveFlash('saveMat'));
     document.getElementById('laborRate').addEventListener('input', () => triggerSaveFlash('saveLab'));
     document.getElementById('wasteFactor').addEventListener('input', () => triggerSaveFlash('saveWaste'));
+    document.getElementById('markupFactor').addEventListener('input', () => triggerSaveFlash('saveMarkup'));
 
 </script>
 
