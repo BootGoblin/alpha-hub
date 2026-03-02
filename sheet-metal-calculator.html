@@ -154,22 +154,43 @@
 </div>
 
 <script>
-    // Update input fields automatically when a profile is selected
+    <script>
+    // 1. Load saved settings when the page opens
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedMaterial = localStorage.getItem('alphaMaterialCost');
+        const savedLabor = localStorage.getItem('alphaLaborRate');
+        const savedWaste = localStorage.getItem('alphaWasteFactor');
+
+        // If a saved value exists, plug it into the input box
+        if (savedMaterial) document.getElementById('materialCost').value = savedMaterial;
+        if (savedLabor) document.getElementById('laborRate').value = savedLabor;
+        if (savedWaste) document.getElementById('wasteFactor').value = savedWaste;
+
+        updateUI(); // Run the initial calculation with the saved numbers
+    });
+
+    // 2. Dropdown behavior (unchanged)
     document.getElementById('profileSelect').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
         document.getElementById('laborMins').value = selectedOption.getAttribute('data-labor');
-        updateUI(); // Recalculate everything immediately
+        updateUI(); 
     });
 
-    // Main calculation function
+    // 3. Main calculation and saving function
     function updateUI() {
+        // Grab the current values from the boxes
         const stretch = parseFloat(document.getElementById('stretchOut').value) || 0;
         const laborMins = parseFloat(document.getElementById('laborMins').value) || 0;
         const totalLF = parseFloat(document.getElementById('totalLF').value) || 0;
         const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
         const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
         const waste = parseFloat(document.getElementById('wasteFactor').value) || 0;
+
+        // Auto-save the rates to the browser's Local Storage
+        localStorage.setItem('alphaMaterialCost', materialCost);
+        localStorage.setItem('alphaLaborRate', laborRate);
+        localStorage.setItem('alphaWasteFactor', waste);
 
         // Per LF Math
         const materialSqFtPerLF = stretch / 12;
@@ -193,14 +214,12 @@
         document.getElementById('outGrandTotal').innerText = '$' + grandTotalJob.toFixed(2);
     }
 
-    // Attach event listeners to all number inputs so it calculates as you type
+    // 4. Listeners (unchanged)
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('input', updateUI);
     });
-
-    // Run once on page load to initialize the numbers
-    updateUI();
+</script>
 </script>
 
 </body>
