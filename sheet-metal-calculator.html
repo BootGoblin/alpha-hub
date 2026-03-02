@@ -12,7 +12,7 @@
             padding: 20px;
         }
         .calculator-container {
-            max-width: 500px;
+            max-width: 550px;
             background: white;
             padding: 30px;
             border-radius: 8px;
@@ -23,6 +23,7 @@
             text-align: center;
             color: #2c3e50;
             margin-top: 0;
+            margin-bottom: 25px;
         }
         .input-group {
             margin-bottom: 15px;
@@ -32,14 +33,25 @@
             font-weight: bold;
             margin-bottom: 5px;
             font-size: 0.9em;
+            color: #4a5568;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 1em;
+        }
+        select {
+            background-color: #fdfdfd;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 20px 0;
         }
         .results {
             margin-top: 25px;
@@ -49,10 +61,15 @@
             border-left: 5px solid #3498db;
         }
         .results p {
-            margin: 10px 0;
-            font-size: 1.1em;
+            margin: 8px 0;
+            font-size: 1.05em;
             display: flex;
             justify-content: space-between;
+        }
+        .per-lf-section {
+            color: #555;
+            font-size: 0.95em;
+            margin-bottom: 15px;
         }
         .total-line {
             font-weight: bold;
@@ -66,8 +83,33 @@
 <body>
 
 <div class="calculator-container">
-    <h2>Sheet Metal Profile Estimator</h2>
+    <h2>Sheet Metal Estimator</h2>
     
+    <div class="input-group">
+        <label for="profileSelect">Standard Profile</label>
+        <select id="profileSelect">
+            <option value="custom" data-stretch="20" data-labor="5.0">-- Custom Profile --</option>
+            <option value="skirt_6" data-stretch="6" data-labor="1.5">6" Skirt / RTU Flashing</option>
+            <option value="counter" data-stretch="8" data-labor="2.0">Counter Flashing</option>
+            <option value="reglet" data-stretch="5" data-labor="1.5">Reglet Receiver</option>
+            <option value="drip_8" data-stretch="8" data-labor="1.5">Drip Edge (up to 8")</option>
+            <option value="drip_12" data-stretch="12" data-labor="1.5">Drip Edge (8-12")</option>
+            <option value="drip_16" data-stretch="16" data-labor="1.5">Drip Edge (12-16")</option>
+            <option value="cleat" data-stretch="4" data-labor="1.0">Cleat</option>
+            <option value="coping_12" data-stretch="12" data-labor="3.0">Coping Cap (6-12")</option>
+            <option value="coping_16" data-stretch="16" data-labor="4.0">Coping Cap (12-16")</option>
+            <option value="coping_24" data-stretch="24" data-labor="5.0">Coping Cap (16-24")</option>
+            <option value="coping_48" data-stretch="48" data-labor="5.0">Coping Cap (24-48")</option>
+            <option value="tpo_drip" data-stretch="8" data-labor="1.5">TPO Coated Drip Edge</option>
+            <option value="gravel_stop" data-stretch="12" data-labor="1.5">Gravel Stop / Fascia</option>
+            <option value="surf_counter" data-stretch="6" data-labor="1.5">Surface Mounted Counterflashing</option>
+            <option value="expansion" data-stretch="16" data-labor="2.0">Expansion Joint Cover</option>
+            <option value="valley" data-stretch="24" data-labor="2.0">Valley Flashing</option>
+            <option value="ridge" data-stretch="12" data-labor="1.5">Ridge Cap</option>
+            <option value="z_closure" data-stretch="6" data-labor="1.0">Z-Closure / Z-Furring</option>
+        </select>
+    </div>
+
     <div class="input-group">
         <label for="stretchOut">Stretch Out (Inches)</label>
         <input type="number" id="stretchOut" value="20" step="0.5">
@@ -76,6 +118,13 @@
     <div class="input-group">
         <label for="laborMins">Labor Minutes (per LF)</label>
         <input type="number" id="laborMins" value="5.0" step="0.1">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="input-group">
+        <label for="totalLF">Total Linear Feet for Job</label>
+        <input type="number" id="totalLF" value="100" step="1">
     </div>
 
     <div class="input-group">
@@ -94,60 +143,63 @@
     </div>
 
     <div class="results">
-        <p><span>Material Cost / LF:</span> <span id="outMaterial">$0.00</span></p>
-        <p><span>Labor Cost / LF:</span> <span id="outLabor">$0.00</span></p>
-        <p class="total-line"><span>Total Cost / LF:</span> <span id="outTotal">$0.00</span></p>
+        <div class="per-lf-section">
+            <p><span>Cost Per LF (Material):</span> <span id="outMatLF">$0.00</span></p>
+            <p><span>Cost Per LF (Labor):</span> <span id="outLabLF">$0.00</span></p>
+        </div>
+        <p><span>Total Material Cost:</span> <span id="outTotalMat">$0.00</span></p>
+        <p><span>Total Labor Cost:</span> <span id="outTotalLab">$0.00</span></p>
+        <p class="total-line"><span>Grand Total:</span> <span id="outGrandTotal">$0.00</span></p>
     </div>
 </div>
 
 <script>
-    // The calculation logic
-    function calculateCostPerLF(stretchOutInches, laborMinutesPerLF, materialCostPerSqFt, hourlyLaborRate, wastePercentage = 0) {
-        const stretch = parseFloat(stretchOutInches) || 0;
-        const laborMins = parseFloat(laborMinutesPerLF) || 0;
-        const materialCost = parseFloat(materialCostPerSqFt) || 0;
-        const laborRate = parseFloat(hourlyLaborRate) || 0;
-        const waste = parseFloat(wastePercentage) || 0;
+    // Update input fields automatically when a profile is selected
+    document.getElementById('profileSelect').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
+        document.getElementById('laborMins').value = selectedOption.getAttribute('data-labor');
+        updateUI(); // Recalculate everything immediately
+    });
 
+    // Main calculation function
+    function updateUI() {
+        const stretch = parseFloat(document.getElementById('stretchOut').value) || 0;
+        const laborMins = parseFloat(document.getElementById('laborMins').value) || 0;
+        const totalLF = parseFloat(document.getElementById('totalLF').value) || 0;
+        const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
+        const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
+        const waste = parseFloat(document.getElementById('wasteFactor').value) || 0;
+
+        // Per LF Math
         const materialSqFtPerLF = stretch / 12;
         const baseMaterialCostPerLF = materialSqFtPerLF * materialCost;
         const wasteMultiplier = 1 + (waste / 100);
         const totalMaterialCostPerLF = baseMaterialCostPerLF * wasteMultiplier;
-
+        
         const laborRatePerMinute = laborRate / 60;
         const laborCostPerLF = laborMins * laborRatePerMinute;
 
-        const totalCostPerLF = totalMaterialCostPerLF + laborCostPerLF;
+        // Total Job Math
+        const grandTotalMaterial = totalMaterialCostPerLF * totalLF;
+        const grandTotalLabor = laborCostPerLF * totalLF;
+        const grandTotalJob = grandTotalMaterial + grandTotalLabor;
 
-        return {
-            materialCostLF: totalMaterialCostPerLF.toFixed(2),
-            laborCostLF: laborCostPerLF.toFixed(2),
-            totalCostLF: totalCostPerLF.toFixed(2)
-        };
+        // Update the screen
+        document.getElementById('outMatLF').innerText = '$' + totalMaterialCostPerLF.toFixed(2);
+        document.getElementById('outLabLF').innerText = '$' + laborCostPerLF.toFixed(2);
+        document.getElementById('outTotalMat').innerText = '$' + grandTotalMaterial.toFixed(2);
+        document.getElementById('outTotalLab').innerText = '$' + grandTotalLabor.toFixed(2);
+        document.getElementById('outGrandTotal').innerText = '$' + grandTotalJob.toFixed(2);
     }
 
-    // Function to read inputs and update the screen
-    function updateUI() {
-        const stretchOut = document.getElementById('stretchOut').value;
-        const laborMins = document.getElementById('laborMins').value;
-        const materialCost = document.getElementById('materialCost').value;
-        const laborRate = document.getElementById('laborRate').value;
-        const wasteFactor = document.getElementById('wasteFactor').value;
-
-        const results = calculateCostPerLF(stretchOut, laborMins, materialCost, laborRate, wasteFactor);
-
-        document.getElementById('outMaterial').innerText = '$' + results.materialCostLF;
-        document.getElementById('outLabor').innerText = '$' + results.laborCostLF;
-        document.getElementById('outTotal').innerText = '$' + results.totalCostLF;
-    }
-
-    // Attach event listeners to all inputs so it updates automatically as you type
+    // Attach event listeners to all number inputs so it calculates as you type
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('input', updateUI);
     });
 
-    // Run once on page load to calculate the default values
+    // Run once on page load to initialize the numbers
     updateUI();
 </script>
 
