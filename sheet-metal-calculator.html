@@ -45,7 +45,7 @@
             font-size: 0.9em;
             color: #4a5568;
         }
-        input, select {
+        input[type="number"], input[type="text"], input[type="date"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -91,9 +91,17 @@
         }
         .selling-line {
             font-weight: bold;
+            font-size: 1.2em !important;
+            color: #2c3e50;
+            margin-top: 10px !important;
+        }
+        .final-line {
+            font-weight: bold;
             font-size: 1.4em !important;
             color: #27ae60;
             margin-top: 10px !important;
+            border-top: 2px solid #27ae60;
+            padding-top: 10px;
         }
         .save-indicator {
             color: #27ae60;
@@ -106,250 +114,32 @@
         .save-indicator.show {
             opacity: 1;
         }
-        .print-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
+        
+        /* Print Options Styling */
+        .print-options {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
             border-radius: 4px;
-            font-size: 1.1em;
+            margin-top: 25px;
+        }
+        .print-options p {
+            margin-top: 0;
             font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .checkbox-grid label {
+            font-weight: normal;
+            font-size: 0.85em;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.2s;
+            color: #555;
         }
-        .print-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        /* --- PRINT STYLES --- */
-        @media print {
-            body {
-                background-color: white;
-                padding: 0;
-            }
-            .calculator-container {
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-                max-width: 100%;
-            }
-            /* Hide UI elements that shouldn't be on the paper */
-            .print-btn, .save-indicator {
-                display: none !important; 
-            }
-            /* Make inputs look like standard text */
-            input, select {
-                border: none;
-                background: transparent;
-                padding: 0;
-                font-weight: bold;
-                color: #2c3e50;
-                appearance: none;
-                -webkit-appearance: none;
-            }
-            .results {
-                border-left: 5px solid #bdc3c7; 
-                background: transparent;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="calculator-container">
-    <h2>Alpha Sheet Metal Estimator</h2>
-    
-    <div class="header-row">
-        <div class="input-group" style="flex: 2;">
-            <label for="projectName">Project Name / Reference</label>
-            <input type="text" id="projectName" placeholder="Enter job name...">
-        </div>
-        <div class="input-group">
-            <label for="projectDate">Date</label>
-            <input type="date" id="projectDate">
-        </div>
-    </div>
-
-    <div class="divider"></div>
-    
-    <div class="input-group">
-        <label for="profileSelect">Standard Profile</label>
-        <select id="profileSelect">
-            <option value="custom" data-stretch="20" data-labor="5.0">-- Custom Profile --</option>
-            <option value="skirt_6" data-stretch="6" data-labor="1.5">6" Skirt / RTU Flashing</option>
-            <option value="counter" data-stretch="8" data-labor="2.0">Counter Flashing</option>
-            <option value="reglet" data-stretch="5" data-labor="1.5">Reglet Receiver</option>
-            <option value="drip_8" data-stretch="8" data-labor="1.5">Drip Edge (up to 8")</option>
-            <option value="drip_12" data-stretch="12" data-labor="1.5">Drip Edge (8-12")</option>
-            <option value="drip_16" data-stretch="16" data-labor="1.5">Drip Edge (12-16")</option>
-            <option value="cleat" data-stretch="4" data-labor="1.0">Cleat</option>
-            <option value="coping_12" data-stretch="12" data-labor="3.0">Coping Cap (6-12")</option>
-            <option value="coping_16" data-stretch="16" data-labor="4.0">Coping Cap (12-16")</option>
-            <option value="coping_24" data-stretch="24" data-labor="5.0">Coping Cap (16-24")</option>
-            <option value="coping_48" data-stretch="48" data-labor="5.0">Coping Cap (24-48")</option>
-            <option value="tpo_drip" data-stretch="8" data-labor="1.5">TPO Coated Drip Edge</option>
-            <option value="gravel_stop" data-stretch="12" data-labor="1.5">Gravel Stop / Fascia</option>
-            <option value="surf_counter" data-stretch="6" data-labor="1.5">Surface Mounted Counterflashing</option>
-            <option value="expansion" data-stretch="16" data-labor="2.0">Expansion Joint Cover</option>
-            <option value="valley" data-stretch="24" data-labor="2.0">Valley Flashing</option>
-            <option value="ridge" data-stretch="12" data-labor="1.5">Ridge Cap</option>
-            <option value="z_closure" data-stretch="6" data-labor="1.0">Z-Closure / Z-Furring</option>
-        </select>
-    </div>
-
-    <div class="header-row">
-        <div class="input-group">
-            <label for="stretchOut">Stretch Out (Inches)</label>
-            <input type="number" id="stretchOut" value="20" step="0.5">
-        </div>
-        <div class="input-group">
-            <label for="laborMins">Labor Mins (per LF)</label>
-            <input type="number" id="laborMins" value="5.0" step="0.1">
-        </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="input-group">
-        <label for="totalLF">Total Linear Feet for Job</label>
-        <input type="number" id="totalLF" value="100" step="1">
-    </div>
-
-    <div class="header-row">
-        <div class="input-group">
-            <label for="materialCost">
-                Mat. Cost ($/SqFt) 
-                <span id="saveMat" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="materialCost" value="1.50" step="0.01">
-        </div>
-        <div class="input-group">
-            <label for="laborRate">
-                Labor Rate ($/Hr) 
-                <span id="saveLab" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="laborRate" value="60.00" step="1.00">
-        </div>
-    </div>
-
-    <div class="header-row">
-        <div class="input-group">
-            <label for="wasteFactor">
-                Waste Factor (%) 
-                <span id="saveWaste" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="wasteFactor" value="10" step="1">
-        </div>
-        <div class="input-group">
-            <label for="markupFactor">
-                Markup Factor (%) 
-                <span id="saveMarkup" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="markupFactor" value="20" step="1">
-        </div>
-    </div>
-
-    <div class="results">
-        <div class="per-lf-section">
-            <p><span>Cost Per LF (Material):</span> <span id="outMatLF">$0.00</span></p>
-            <p><span>Cost Per LF (Labor):</span> <span id="outLabLF">$0.00</span></p>
-        </div>
-        <p><span>Total Material Cost:</span> <span id="outTotalMat">$0.00</span></p>
-        <p><span>Total Labor Cost:</span> <span id="outTotalLab">$0.00</span></p>
-        <p class="total-line"><span>Total Base Cost:</span> <span id="outGrandTotal">$0.00</span></p>
-        <p class="selling-line"><span>Selling Price:</span> <span id="outSellingPrice">$0.00</span></p>
-    </div>
-
-    <button class="print-btn" onclick="window.print()">Print Estimate to PDF</button>
-
-</div>
-
-<script>
-    // Set today's date automatically
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('projectDate').value = today;
-
-    // Load saved settings when the page opens
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedMaterial = localStorage.getItem('alphaMaterialCost');
-        const savedLabor = localStorage.getItem('alphaLaborRate');
-        const savedWaste = localStorage.getItem('alphaWasteFactor');
-        const savedMarkup = localStorage.getItem('alphaMarkupFactor');
-
-        if (savedMaterial) document.getElementById('materialCost').value = savedMaterial;
-        if (savedLabor) document.getElementById('laborRate').value = savedLabor;
-        if (savedWaste) document.getElementById('wasteFactor').value = savedWaste;
-        if (savedMarkup) document.getElementById('markupFactor').value = savedMarkup;
-
-        updateUI(); 
-    });
-
-    document.getElementById('profileSelect').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
-        document.getElementById('laborMins').value = selectedOption.getAttribute('data-labor');
-        updateUI(); 
-    });
-
-    function updateUI() {
-        const stretch = parseFloat(document.getElementById('stretchOut').value) || 0;
-        const laborMins = parseFloat(document.getElementById('laborMins').value) || 0;
-        const totalLF = parseFloat(document.getElementById('totalLF').value) || 0;
-        const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
-        const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
-        const waste = parseFloat(document.getElementById('wasteFactor').value) || 0;
-        const markup = parseFloat(document.getElementById('markupFactor').value) || 0;
-
-        localStorage.setItem('alphaMaterialCost', materialCost);
-        localStorage.setItem('alphaLaborRate', laborRate);
-        localStorage.setItem('alphaWasteFactor', waste);
-        localStorage.setItem('alphaMarkupFactor', markup);
-
-        const materialSqFtPerLF = stretch / 12;
-        const baseMaterialCostPerLF = materialSqFtPerLF * materialCost;
-        const wasteMultiplier = 1 + (waste / 100);
-        const totalMaterialCostPerLF = baseMaterialCostPerLF * wasteMultiplier;
-        
-        const laborRatePerMinute = laborRate / 60;
-        const laborCostPerLF = laborMins * laborRatePerMinute;
-
-        const grandTotalMaterial = totalMaterialCostPerLF * totalLF;
-        const grandTotalLabor = laborCostPerLF * totalLF;
-        
-        const grandTotalJob = grandTotalMaterial + grandTotalLabor;
-        
-        const markupMultiplier = 1 + (markup / 100);
-        const sellingPrice = grandTotalJob * markupMultiplier;
-
-        document.getElementById('outMatLF').innerText = '$' + totalMaterialCostPerLF.toFixed(2);
-        document.getElementById('outLabLF').innerText = '$' + laborCostPerLF.toFixed(2);
-        document.getElementById('outTotalMat').innerText = '$' + grandTotalMaterial.toFixed(2);
-        document.getElementById('outTotalLab').innerText = '$' + grandTotalLabor.toFixed(2);
-        document.getElementById('outGrandTotal').innerText = '$' + grandTotalJob.toFixed(2);
-        document.getElementById('outSellingPrice').innerText = '$' + sellingPrice.toFixed(2);
-    }
-
-    function triggerSaveFlash(elementId) {
-        const indicator = document.getElementById(elementId);
-        indicator.classList.add('show');
-        setTimeout(() => {
-            indicator.classList.remove('show');
-        }, 1500);
-    }
-
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-        input.addEventListener('input', updateUI);
-    });
-
-    document.getElementById('materialCost').addEventListener('input', () => triggerSaveFlash('saveMat'));
-    document.getElementById('laborRate').addEventListener('input', () => triggerSaveFlash('saveLab'));
-    document.getElementById('wasteFactor').addEventListener('input', () => triggerSaveFlash('saveWaste'));
-    document.getElementById('markupFactor').addEventListener('input', () => triggerSaveFlash('saveMarkup'));
-
-</script>
-
-</body>
-</html>
+        .checkbox-grid input[type="checkbox"] {
+            margin-right: 8px;
