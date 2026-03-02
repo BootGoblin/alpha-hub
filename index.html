@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Roofing - Internal Tools</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            color: #606f7b;
+            font-size: 1.1em;
+        }
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 900px;
+            margin: auto;
+        }
+        .tool-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 250px;
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            border-top: 5px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #2980b9;
+        }
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        .tool-card h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .tool-card p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Alpha Operations Dashboard</h1>
+        <p>Master directory for internal estimating and inspection tools</p>
+    </div>
+
+    <div class="dashboard">
+        
+        <a href="sheet-metal-calculator.html" class="tool-card">
+            <div class="tool-icon">📐</div>
+            <h3>Sheet Metal Estimator</h3>
+            <p>Calculate stretch outs, labor, and material costs per LF for custom fabrication.</p>
+        </a>
+
+        <a href="your-inspection-file-1.html" class="tool-card">
+            <div class="tool-icon">📋</div>
+            <h3>Site Inspection Checklists</h3>
+            <p>Access and complete daily standardized site inspections.</p>
+        </a>
+
+        <a href="your-inspection-file-2.html" class="tool-card">
+            <div class="tool-icon">✅</div>
+            <h3>Equipment Inspection</h3>
+            <p>Review and log equipment safety and maintenance checks.</p>
+        </a>
+
+        </div>
+
+</body>
+</html>
