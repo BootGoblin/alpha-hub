@@ -29,7 +29,8 @@
             margin-bottom: 15px;
         }
         label {
-            display: block;
+            display: flex;
+            align-items: center;
             font-weight: bold;
             margin-bottom: 5px;
             font-size: 0.9em;
@@ -77,6 +78,18 @@
             border-top: 2px solid #ccc;
             padding-top: 10px;
             color: #2c3e50;
+        }
+        /* CSS for the flashing Saved indicator */
+        .save-indicator {
+            color: #27ae60;
+            font-size: 0.85em;
+            margin-left: 10px;
+            font-weight: normal;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .save-indicator.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -128,17 +141,26 @@
     </div>
 
     <div class="input-group">
-        <label for="materialCost">Material Cost ($ per Sq Ft)</label>
+        <label for="materialCost">
+            Material Cost ($ per Sq Ft) 
+            <span id="saveMat" class="save-indicator">✓ Saved</span>
+        </label>
         <input type="number" id="materialCost" value="1.50" step="0.01">
     </div>
 
     <div class="input-group">
-        <label for="laborRate">Shop Hourly Labor Rate ($)</label>
+        <label for="laborRate">
+            Shop Hourly Labor Rate ($) 
+            <span id="saveLab" class="save-indicator">✓ Saved</span>
+        </label>
         <input type="number" id="laborRate" value="60.00" step="1.00">
     </div>
 
     <div class="input-group">
-        <label for="wasteFactor">Waste/Scrap Factor (%)</label>
+        <label for="wasteFactor">
+            Waste/Scrap Factor (%) 
+            <span id="saveWaste" class="save-indicator">✓ Saved</span>
+        </label>
         <input type="number" id="wasteFactor" value="10" step="1">
     </div>
 
@@ -154,22 +176,20 @@
 </div>
 
 <script>
-    <script>
     // 1. Load saved settings when the page opens
     window.addEventListener('DOMContentLoaded', () => {
         const savedMaterial = localStorage.getItem('alphaMaterialCost');
         const savedLabor = localStorage.getItem('alphaLaborRate');
         const savedWaste = localStorage.getItem('alphaWasteFactor');
 
-        // If a saved value exists, plug it into the input box
         if (savedMaterial) document.getElementById('materialCost').value = savedMaterial;
         if (savedLabor) document.getElementById('laborRate').value = savedLabor;
         if (savedWaste) document.getElementById('wasteFactor').value = savedWaste;
 
-        updateUI(); // Run the initial calculation with the saved numbers
+        updateUI(); // Run the initial calculation
     });
 
-    // 2. Dropdown behavior (unchanged)
+    // 2. Dropdown behavior
     document.getElementById('profileSelect').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
@@ -179,7 +199,6 @@
 
     // 3. Main calculation and saving function
     function updateUI() {
-        // Grab the current values from the boxes
         const stretch = parseFloat(document.getElementById('stretchOut').value) || 0;
         const laborMins = parseFloat(document.getElementById('laborMins').value) || 0;
         const totalLF = parseFloat(document.getElementById('totalLF').value) || 0;
@@ -187,12 +206,12 @@
         const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
         const waste = parseFloat(document.getElementById('wasteFactor').value) || 0;
 
-        // Auto-save the rates to the browser's Local Storage
+        // Auto-save the rates to the browser
         localStorage.setItem('alphaMaterialCost', materialCost);
         localStorage.setItem('alphaLaborRate', laborRate);
         localStorage.setItem('alphaWasteFactor', waste);
 
-        // Per LF Math
+        // Math
         const materialSqFtPerLF = stretch / 12;
         const baseMaterialCostPerLF = materialSqFtPerLF * materialCost;
         const wasteMultiplier = 1 + (waste / 100);
@@ -201,7 +220,6 @@
         const laborRatePerMinute = laborRate / 60;
         const laborCostPerLF = laborMins * laborRatePerMinute;
 
-        // Total Job Math
         const grandTotalMaterial = totalMaterialCostPerLF * totalLF;
         const grandTotalLabor = laborCostPerLF * totalLF;
         const grandTotalJob = grandTotalMaterial + grandTotalLabor;
@@ -214,12 +232,28 @@
         document.getElementById('outGrandTotal').innerText = '$' + grandTotalJob.toFixed(2);
     }
 
-    // 4. Listeners (unchanged)
+    // 4. Function to flash the "Saved!" text
+    function triggerSaveFlash(elementId) {
+        const indicator = document.getElementById(elementId);
+        indicator.classList.add('show');
+        
+        // Remove the class after 1.5 seconds so it fades out
+        setTimeout(() => {
+            indicator.classList.remove('show');
+        }, 1500);
+    }
+
+    // 5. Attach event listeners
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('input', updateUI);
     });
-</script>
+
+    // Attach specific listeners for the flash effect when rates change
+    document.getElementById('materialCost').addEventListener('input', () => triggerSaveFlash('saveMat'));
+    document.getElementById('laborRate').addEventListener('input', () => triggerSaveFlash('saveLab'));
+    document.getElementById('wasteFactor').addEventListener('input', () => triggerSaveFlash('saveWaste'));
+
 </script>
 
 </body>
