@@ -251,7 +251,9 @@
     </div>
 
     <div class="input-group">
-        <label for="totalLaborMins">Total Labor Mins (Entire Order)</label>
+        <label for="totalLaborMins">
+            Total Labor Mins (Entire Order) <span id="saveLaborMins" class="save-indicator">✓ Saved</span>
+        </label>
         <input type="number" id="totalLaborMins" value="60" step="1">
     </div>
 
@@ -265,7 +267,9 @@
             <input type="number" id="materialCost" value="1.50" step="0.01">
         </div>
         <div class="input-group">
-            <label for="manualMaterialCost">Manual Material Total ($)</label>
+            <label for="manualMaterialCost">
+                Manual Material Total ($) <span id="saveManualMat" class="save-indicator">✓ Saved</span>
+            </label>
             <input type="number" id="manualMaterialCost" class="highlight-input" placeholder="Overrides SqFt calc..." step="0.01">
         </div>
     </div>
@@ -336,16 +340,20 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         const savedMaterial = localStorage.getItem('alphaMaterialCost');
+        const savedManualMat = localStorage.getItem('alphaManualMaterialCost');
         const savedLabor = localStorage.getItem('alphaLaborRate');
+        const savedTotalLabor = localStorage.getItem('alphaTotalLaborMins');
         const savedWaste = localStorage.getItem('alphaWasteFactor');
         const savedMarkup = localStorage.getItem('alphaMarkupFactor');
         const savedTax = localStorage.getItem('alphaTaxRate');
 
-        if (savedMaterial) document.getElementById('materialCost').value = savedMaterial;
-        if (savedLabor) document.getElementById('laborRate').value = savedLabor;
-        if (savedWaste) document.getElementById('wasteFactor').value = savedWaste;
-        if (savedMarkup) document.getElementById('markupFactor').value = savedMarkup;
-        if (savedTax) document.getElementById('taxRate').value = savedTax;
+        if (savedMaterial !== null) document.getElementById('materialCost').value = savedMaterial;
+        if (savedManualMat !== null) document.getElementById('manualMaterialCost').value = savedManualMat;
+        if (savedLabor !== null) document.getElementById('laborRate').value = savedLabor;
+        if (savedTotalLabor !== null) document.getElementById('totalLaborMins').value = savedTotalLabor;
+        if (savedWaste !== null) document.getElementById('wasteFactor').value = savedWaste;
+        if (savedMarkup !== null) document.getElementById('markupFactor').value = savedMarkup;
+        if (savedTax !== null) document.getElementById('taxRate').value = savedTax;
 
         ['Mat', 'Lab', 'Waste', 'Markup', 'Tax', 'Internal'].forEach(id => {
             const savedState = localStorage.getItem('alphaHide' + id);
@@ -361,7 +369,6 @@
     document.getElementById('profileSelect').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
-        // No longer updating labor minutes dynamically based on dropdown
         updateUI(); 
     });
 
@@ -377,22 +384,23 @@
         const markup = parseFloat(document.getElementById('markupFactor').value) || 0;
         const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
 
-        localStorage.setItem('alphaMaterialCost', materialCost);
-        localStorage.setItem('alphaLaborRate', laborRate);
-        localStorage.setItem('alphaWasteFactor', waste);
-        localStorage.setItem('alphaMarkupFactor', markup);
-        localStorage.setItem('alphaTaxRate', taxRate);
+        // Auto-save the rates
+        localStorage.setItem('alphaMaterialCost', document.getElementById('materialCost').value);
+        localStorage.setItem('alphaManualMaterialCost', manualMatCost);
+        localStorage.setItem('alphaLaborRate', document.getElementById('laborRate').value);
+        localStorage.setItem('alphaTotalLaborMins', document.getElementById('totalLaborMins').value);
+        localStorage.setItem('alphaWasteFactor', document.getElementById('wasteFactor').value);
+        localStorage.setItem('alphaMarkupFactor', document.getElementById('markupFactor').value);
+        localStorage.setItem('alphaTaxRate', document.getElementById('taxRate').value);
 
         // --- Material Math ---
         let grandTotalMaterial = 0;
         let materialCostPerLF = 0;
 
         if (manualMatCost !== "" && parseFloat(manualMatCost) >= 0) {
-            // Use the manual total directly
             grandTotalMaterial = parseFloat(manualMatCost);
             materialCostPerLF = totalLF > 0 ? grandTotalMaterial / totalLF : 0;
         } else {
-            // Use standard calculation
             const materialSqFtPerLF = stretch / 12;
             const baseMaterialCostPerLF = materialSqFtPerLF * materialCost;
             const wasteMultiplier = 1 + (waste / 100);
@@ -433,10 +441,12 @@
 
     function triggerSaveFlash(elementId) {
         const indicator = document.getElementById(elementId);
-        indicator.classList.add('show');
-        setTimeout(() => {
-            indicator.classList.remove('show');
-        }, 1500);
+        if(indicator) {
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 1500);
+        }
     }
 
     const numberInputs = document.querySelectorAll('input[type="number"], input[type="text"], input[type="date"]');
@@ -450,7 +460,9 @@
     });
 
     document.getElementById('materialCost').addEventListener('input', () => triggerSaveFlash('saveMat'));
+    document.getElementById('manualMaterialCost').addEventListener('input', () => triggerSaveFlash('saveManualMat'));
     document.getElementById('laborRate').addEventListener('input', () => triggerSaveFlash('saveLab'));
+    document.getElementById('totalLaborMins').addEventListener('input', () => triggerSaveFlash('saveLaborMins'));
     document.getElementById('wasteFactor').addEventListener('input', () => triggerSaveFlash('saveWaste'));
     document.getElementById('markupFactor').addEventListener('input', () => triggerSaveFlash('saveMarkup'));
     document.getElementById('taxRate').addEventListener('input', () => triggerSaveFlash('saveTax'));
