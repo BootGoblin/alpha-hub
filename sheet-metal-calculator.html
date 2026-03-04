@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Sheet Metal Estimator</title>
+    <title>Alpha Sheet Metal Calculator</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -114,7 +114,12 @@
         .save-indicator.show {
             opacity: 1;
         }
+        .highlight-input {
+            border: 2px solid #3498db !important;
+            background-color: #f0f8ff !important;
+        }
         
+        /* Print Options Styling */
         .print-options {
             background: #fff;
             border: 1px solid #e2e8f0;
@@ -177,9 +182,10 @@
                 appearance: none;
                 -webkit-appearance: none;
             }
+            .highlight-input { border: none !important; background-color: transparent !important; }
             .results { border-left: 5px solid #bdc3c7; background: transparent; }
 
-            /* Dynamic Hide Rules based on Checkboxes */
+            /* Dynamic Hide Rules */
             body.hide-mat-print #groupMaterial { display: none !important; }
             body.hide-lab-print #groupLabor { display: none !important; }
             body.hide-waste-print #groupWaste { display: none !important; }
@@ -210,226 +216,4 @@
     
     <div class="input-group">
         <label for="profileSelect">Standard Profile</label>
-        <select id="profileSelect">
-            <option value="custom" data-stretch="20" data-labor="5.0">-- Custom Profile --</option>
-            <option value="skirt_6" data-stretch="6" data-labor="1.5">6" Skirt / RTU Flashing</option>
-            <option value="counter" data-stretch="8" data-labor="2.0">Counter Flashing</option>
-            <option value="reglet" data-stretch="5" data-labor="1.5">Reglet Receiver</option>
-            <option value="drip_8" data-stretch="8" data-labor="1.5">Drip Edge (up to 8")</option>
-            <option value="drip_12" data-stretch="12" data-labor="1.5">Drip Edge (8-12")</option>
-            <option value="drip_16" data-stretch="16" data-labor="1.5">Drip Edge (12-16")</option>
-            <option value="cleat" data-stretch="4" data-labor="1.0">Cleat</option>
-            <option value="coping_12" data-stretch="12" data-labor="3.0">Coping Cap (6-12")</option>
-            <option value="coping_16" data-stretch="16" data-labor="4.0">Coping Cap (12-16")</option>
-            <option value="coping_24" data-stretch="24" data-labor="5.0">Coping Cap (16-24")</option>
-            <option value="coping_48" data-stretch="48" data-labor="5.0">Coping Cap (24-48")</option>
-            <option value="tpo_drip" data-stretch="8" data-labor="1.5">TPO Coated Drip Edge</option>
-            <option value="gravel_stop" data-stretch="12" data-labor="1.5">Gravel Stop / Fascia</option>
-            <option value="surf_counter" data-stretch="6" data-labor="1.5">Surface Mounted Counterflashing</option>
-            <option value="expansion" data-stretch="16" data-labor="2.0">Expansion Joint Cover</option>
-            <option value="valley" data-stretch="24" data-labor="2.0">Valley Flashing</option>
-            <option value="ridge" data-stretch="12" data-labor="1.5">Ridge Cap</option>
-            <option value="z_closure" data-stretch="6" data-labor="1.0">Z-Closure / Z-Furring</option>
-        </select>
-    </div>
-
-    <div class="header-row">
-        <div class="input-group">
-            <label for="stretchOut">Stretch Out (Inches)</label>
-            <input type="number" id="stretchOut" value="20" step="0.5">
-        </div>
-        <div class="input-group">
-            <label for="laborMins">Labor Mins (per LF)</label>
-            <input type="number" id="laborMins" value="5.0" step="0.1">
-        </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="input-group">
-        <label for="totalLF">Total Linear Feet for Job</label>
-        <input type="number" id="totalLF" value="100" step="1">
-    </div>
-
-    <div class="header-row">
-        <div class="input-group" id="groupMaterial">
-            <label for="materialCost">
-                Mat. Cost ($/SqFt) <span id="saveMat" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="materialCost" value="1.50" step="0.01">
-        </div>
-        <div class="input-group" id="groupLabor">
-            <label for="laborRate">
-                Labor Rate ($/Hr) <span id="saveLab" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="laborRate" value="60.00" step="1.00">
-        </div>
-    </div>
-
-    <div class="header-row">
-        <div class="input-group" id="groupWaste">
-            <label for="wasteFactor">
-                Waste Factor (%) <span id="saveWaste" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="wasteFactor" value="10" step="1">
-        </div>
-        <div class="input-group" id="groupMarkup">
-            <label for="markupFactor">
-                Markup Factor (%) <span id="saveMarkup" class="save-indicator">✓ Saved</span>
-            </label>
-            <input type="number" id="markupFactor" value="20" step="1">
-        </div>
-    </div>
-
-    <div class="input-group" id="groupTax">
-        <label for="taxRate">
-            Tax Rate (%) <span id="saveTax" class="save-indicator">✓ Saved</span>
-        </label>
-        <input type="number" id="taxRate" value="9.3" step="0.1">
-    </div>
-
-    <div class="results">
-        <div class="per-lf-section internal-result">
-            <p><span>Cost Per LF (Material):</span> <span id="outMatLF">$0.00</span></p>
-            <p><span>Cost Per LF (Labor):</span> <span id="outLabLF">$0.00</span></p>
-        </div>
-        <p class="internal-result"><span>Total Material Cost:</span> <span id="outTotalMat">$0.00</span></p>
-        <p class="internal-result"><span>Total Labor Cost:</span> <span id="outTotalLab">$0.00</span></p>
-        <p class="total-line internal-result"><span>Total Base Cost:</span> <span id="outGrandTotal">$0.00</span></p>
-        
-        <p class="selling-line"><span>Subtotal:</span> <span id="outSellingPrice">$0.00</span></p>
-        <p id="resultTaxLine"><span>Estimated Tax:</span> <span id="outTaxAmount">$0.00</span></p>
-        <p class="final-line"><span>Estimated Cost:</span> <span id="outFinalPrice">$0.00</span></p>
-    </div>
-
-    <div class="print-options">
-        <p>PDF Export Options (Hide fields on printout)</p>
-        <div class="checkbox-grid">
-            <label><input type="checkbox" id="chkHideMat"> Hide Material Cost</label>
-            <label><input type="checkbox" id="chkHideLab"> Hide Labor Rate</label>
-            <label><input type="checkbox" id="chkHideWaste"> Hide Waste Factor</label>
-            <label><input type="checkbox" id="chkHideMarkup"> Hide Markup Factor</label>
-            <label><input type="checkbox" id="chkHideTax"> Hide Tax Rate</label>
-            <label><input type="checkbox" id="chkHideInternal"> Hide Internal Base Totals</label>
-        </div>
-    </div>
-
-    <button class="print-btn" onclick="window.print()">Print Estimate to PDF</button>
-
-</div>
-
-<script>
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('projectDate').value = today;
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedMaterial = localStorage.getItem('alphaMaterialCost');
-        const savedLabor = localStorage.getItem('alphaLaborRate');
-        const savedWaste = localStorage.getItem('alphaWasteFactor');
-        const savedMarkup = localStorage.getItem('alphaMarkupFactor');
-        const savedTax = localStorage.getItem('alphaTaxRate');
-
-        if (savedMaterial) document.getElementById('materialCost').value = savedMaterial;
-        if (savedLabor) document.getElementById('laborRate').value = savedLabor;
-        if (savedWaste) document.getElementById('wasteFactor').value = savedWaste;
-        if (savedMarkup) document.getElementById('markupFactor').value = savedMarkup;
-        if (savedTax) document.getElementById('taxRate').value = savedTax;
-
-        ['Mat', 'Lab', 'Waste', 'Markup', 'Tax', 'Internal'].forEach(id => {
-            const savedState = localStorage.getItem('alphaHide' + id);
-            if (savedState !== null) {
-                document.getElementById('chkHide' + id).checked = (savedState === 'true');
-            }
-        });
-
-        updatePrintClasses();
-        updateUI(); 
-    });
-
-    document.getElementById('profileSelect').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        document.getElementById('stretchOut').value = selectedOption.getAttribute('data-stretch');
-        document.getElementById('laborMins').value = selectedOption.getAttribute('data-labor');
-        updateUI(); 
-    });
-
-    function updateUI() {
-        const stretch = parseFloat(document.getElementById('stretchOut').value) || 0;
-        const laborMins = parseFloat(document.getElementById('laborMins').value) || 0;
-        const totalLF = parseFloat(document.getElementById('totalLF').value) || 0;
-        const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
-        const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
-        const waste = parseFloat(document.getElementById('wasteFactor').value) || 0;
-        const markup = parseFloat(document.getElementById('markupFactor').value) || 0;
-        const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
-
-        localStorage.setItem('alphaMaterialCost', materialCost);
-        localStorage.setItem('alphaLaborRate', laborRate);
-        localStorage.setItem('alphaWasteFactor', waste);
-        localStorage.setItem('alphaMarkupFactor', markup);
-        localStorage.setItem('alphaTaxRate', taxRate);
-
-        const materialSqFtPerLF = stretch / 12;
-        const baseMaterialCostPerLF = materialSqFtPerLF * materialCost;
-        const wasteMultiplier = 1 + (waste / 100);
-        const totalMaterialCostPerLF = baseMaterialCostPerLF * wasteMultiplier;
-        
-        const laborRatePerMinute = laborRate / 60;
-        const laborCostPerLF = laborMins * laborRatePerMinute;
-
-        const grandTotalMaterial = totalMaterialCostPerLF * totalLF;
-        const grandTotalLabor = laborCostPerLF * totalLF;
-        const grandTotalJob = grandTotalMaterial + grandTotalLabor;
-        
-        const markupMultiplier = 1 + (markup / 100);
-        const sellingPrice = grandTotalJob * markupMultiplier;
-
-        const taxAmount = sellingPrice * (taxRate / 100);
-        const finalPrice = sellingPrice + taxAmount;
-
-        document.getElementById('outMatLF').innerText = '$' + totalMaterialCostPerLF.toFixed(2);
-        document.getElementById('outLabLF').innerText = '$' + laborCostPerLF.toFixed(2);
-        document.getElementById('outTotalMat').innerText = '$' + grandTotalMaterial.toFixed(2);
-        document.getElementById('outTotalLab').innerText = '$' + grandTotalLabor.toFixed(2);
-        document.getElementById('outGrandTotal').innerText = '$' + grandTotalJob.toFixed(2);
-        document.getElementById('outSellingPrice').innerText = '$' + sellingPrice.toFixed(2);
-        document.getElementById('outTaxAmount').innerText = '$' + taxAmount.toFixed(2);
-        document.getElementById('outFinalPrice').innerText = '$' + finalPrice.toFixed(2);
-    }
-
-    function updatePrintClasses() {
-        ['Mat', 'Lab', 'Waste', 'Markup', 'Tax', 'Internal'].forEach(id => {
-            const isChecked = document.getElementById('chkHide' + id).checked;
-            document.body.classList.toggle('hide-' + id.toLowerCase() + '-print', isChecked);
-            localStorage.setItem('alphaHide' + id, isChecked);
-        });
-    }
-
-    function triggerSaveFlash(elementId) {
-        const indicator = document.getElementById(elementId);
-        indicator.classList.add('show');
-        setTimeout(() => {
-            indicator.classList.remove('show');
-        }, 1500);
-    }
-
-    const numberInputs = document.querySelectorAll('input[type="number"], input[type="text"], input[type="date"]');
-    numberInputs.forEach(input => {
-        input.addEventListener('input', updateUI);
-    });
-
-    const checkboxes = document.querySelectorAll('.checkbox-grid input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updatePrintClasses);
-    });
-
-    document.getElementById('materialCost').addEventListener('input', () => triggerSaveFlash('saveMat'));
-    document.getElementById('laborRate').addEventListener('input', () => triggerSaveFlash('saveLab'));
-    document.getElementById('wasteFactor').addEventListener('input', () => triggerSaveFlash('saveWaste'));
-    document.getElementById('markupFactor').addEventListener('input', () => triggerSaveFlash('saveMarkup'));
-    document.getElementById('taxRate').addEventListener('input', () => triggerSaveFlash('saveTax'));
-
-</script>
-
-</body>
-</html>
+        <select id="profileSelect
