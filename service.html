@@ -53,23 +53,28 @@
 
         textarea { resize: vertical; min-height: 100px; }
         
-        /* Layout for Task + N/A Checkboxes */
+        /* New Layout for 4-Option Radio Buttons */
         .inspection-item {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            background-color: var(--item-bg); padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; transition: all 0.2s ease; border: 1px solid transparent;
+            display: flex; flex-direction: column;
+            background-color: var(--item-bg); padding: 15px; border-radius: 8px; margin-bottom: 12px; transition: all 0.2s ease; border: 1px solid #e2e8f0;
         }
         .inspection-item:hover { background-color: var(--hover-bg); border-color: #94a3b8; }
         
-        .primary-check {
-            display: flex; align-items: flex-start; cursor: pointer; flex-grow: 1; font-weight: 500;
-            word-break: break-word; /* Forces the text to wrap nicely */
+        .item-prompt {
+            font-weight: 600; margin-bottom: 10px; color: #333; font-size: 1.05em;
         }
-        .primary-check input { margin-right: 15px; width: 24px; height: 24px; accent-color: var(--primary-accent); flex-shrink: 0; margin-top: 2px; }
         
-        .na-check {
-            display: flex; align-items: center; cursor: pointer; color: #666; font-size: 0.9em; margin-left: 15px; padding-left: 15px; border-left: 1px solid #ddd; flex-shrink: 0; font-weight: bold;
+        .radio-group {
+            display: flex; gap: 20px; flex-wrap: wrap;
         }
-        .na-check input { margin-right: 8px; width: 20px; height: 20px; accent-color: #888; }
+        
+        .radio-option {
+            display: flex; align-items: center; cursor: pointer; font-size: 0.95em; color: #555;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 6px; width: 18px; height: 18px; accent-color: var(--primary-accent); cursor: pointer;
+        }
         
         .photo-upload-container {
             margin-top: 25px; padding: 20px; background: var(--item-bg); border: 2px dashed var(--primary-accent); border-radius: 8px; text-align: center;
@@ -99,8 +104,8 @@
             .image-gallery { justify-content: flex-start; gap: 10px; }
             img.preview-image { max-width: 300px; max-height: 300px; box-shadow: none; border: 2px solid #ddd; }
 
-            .inspection-item { background: none; border: none; padding: 5px 0; margin-bottom: 5px; }
-            .na-check { border-left: none; }
+            .inspection-item { background: none; border: none; padding: 5px 0; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; border-radius: 0; }
+            .item-prompt { margin-bottom: 5px; }
         }
     </style>
 </head>
@@ -145,11 +150,51 @@
     <div class="section-card">
         <h2>Technician Readiness & Safety</h2>
         <div style="margin-top: 10px;">
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Appropriate Personal Protective Equipment (PPE) utilized</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Vehicle and equipment secured and maintained</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Tools and parts inventory checked for the specific job</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Customer's property protected (e.g., drop cloths, covers used)</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Safety protocols followed upon entering and exiting the site</label><label class="na-check"><input type="checkbox"> N/A</label></div>
+            <div class="inspection-item">
+                <div class="item-prompt">Appropriate Personal Protective Equipment (PPE) utilized</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv1q1" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv1q1" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv1q1" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv1q1" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Vehicle and equipment secured and maintained</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv1q2" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv1q2" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv1q2" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv1q2" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Tools and parts inventory checked for the specific job</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv1q3" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv1q3" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv1q3" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv1q3" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Customer's property protected (e.g., drop cloths, covers used)</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv1q4" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv1q4" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv1q4" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv1q4" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Safety protocols followed upon entering and exiting the site</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv1q5" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv1q5" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv1q5" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv1q5" value="na"> N/A</label>
+                </div>
+            </div>
         </div>
         <label class="field-label">Readiness & Safety Notes:</label>
         <textarea placeholder="Add any safety notes..."></textarea>
@@ -162,10 +207,42 @@
     <div class="section-card">
         <h2>On-Site Service & Procedure</h2>
         <div style="margin-top: 10px;">
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Work area isolated and cleared of non-essential items</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Repair steps followed as per company/manufacturer guidelines</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Communication with office/support for complex issues successful</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Work area cleanliness maintained during the service</label><label class="na-check"><input type="checkbox"> N/A</label></div>
+            <div class="inspection-item">
+                <div class="item-prompt">Work area isolated and cleared of non-essential items</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv2q1" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv2q1" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv2q1" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv2q1" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Repair steps followed as per company/manufacturer guidelines</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv2q2" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv2q2" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv2q2" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv2q2" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Communication with office/support for complex issues successful</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv2q3" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv2q3" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv2q3" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv2q3" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Work area cleanliness maintained during the service</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv2q4" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv2q4" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv2q4" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv2q4" value="na"> N/A</label>
+                </div>
+            </div>
         </div>
         <label class="field-label">Service & Procedure Notes:</label>
         <textarea placeholder="Add repair procedure notes..."></textarea>
@@ -178,15 +255,57 @@
     <div class="section-card">
         <h2>Work Quality & Completion</h2>
         <div style="margin-top: 10px;">
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Repair issue completely resolved and confirmed by technician</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> All affected systems or components checked for proper function</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Quality of workmanship meets company standards</label><label class="na-check"><input type="checkbox"> N/A</label></div>
-            <div class="inspection-item"><label class="primary-check"><input type="checkbox"> Area cleared of all debris, old parts, and tools upon completion</label><label class="na-check"><input type="checkbox"> N/A</label></div>
+            <div class="inspection-item">
+                <div class="item-prompt">Repair issue completely resolved and confirmed by technician</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv3q1" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv3q1" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv3q1" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv3q1" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">All affected systems or components checked for proper function</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv3q2" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv3q2" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv3q2" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv3q2" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Quality of workmanship meets company standards</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv3q3" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv3q3" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv3q3" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv3q3" value="na"> N/A</label>
+                </div>
+            </div>
+            <div class="inspection-item">
+                <div class="item-prompt">Area cleared of all debris, old parts, and tools upon completion</div>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="srv3q4" value="excellence"> Excellence</label>
+                    <label class="radio-option"><input type="radio" name="srv3q4" value="pass"> Pass</label>
+                    <label class="radio-option"><input type="radio" name="srv3q4" value="notes"> See Notes</label>
+                    <label class="radio-option"><input type="radio" name="srv3q4" value="na"> N/A</label>
+                </div>
+            </div>
         </div>
         <label class="field-label">Completion Notes:</label>
         <textarea placeholder="Add final completion notes..."></textarea>
         <div class="photo-upload-container">
             <label class="upload-label">📷 Attach Photos</label>
+            <input type="file" accept="image/*" multiple>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2>Re-Inspection</h2>
+        <label class="field-label">Re-Inspection Notes & Findings:</label>
+        <textarea placeholder="Enter re-inspection details here..."></textarea>
+        <div class="photo-upload-container">
+            <label class="upload-label">📷 Attach Re-Inspection Photos</label>
             <input type="file" accept="image/*" multiple>
         </div>
     </div>
@@ -205,8 +324,9 @@
             document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], textarea, select').forEach((el, index) => {
                 data['text_' + index] = el.value;
             });
-            document.querySelectorAll('input[type="checkbox"]').forEach((el, index) => {
-                data['check_' + index] = el.checked;
+            // Changed from checkbox to radio
+            document.querySelectorAll('input[type="radio"]').forEach((el, index) => {
+                data['radio_' + index] = el.checked;
             });
             localStorage.setItem('alphaServiceDraft', JSON.stringify(data));
         }
@@ -218,8 +338,9 @@
                 document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], textarea, select').forEach((el, index) => {
                     if(data['text_' + index] !== undefined) el.value = data['text_' + index];
                 });
-                document.querySelectorAll('input[type="checkbox"]').forEach((el, index) => {
-                    if(data['check_' + index] !== undefined) el.checked = data['check_' + index];
+                // Changed to load radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach((el, index) => {
+                    if(data['radio_' + index] !== undefined) el.checked = data['radio_' + index];
                 });
             }
         }
